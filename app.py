@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Frame, filedialog, Text
 import os
+import subprocess, sys
 
 # holds the whole app
 root = tk.Tk()
@@ -23,35 +24,36 @@ def addApp():
     for widget in frame.winfo_children():
         widget.destroy()
 
-    filename = filedialog.askopenfilename(initialdir="/", title="select file", filetypes=(("executables", "*.exe"), ("all files", "*.*"))) # also gives the location of the picked file 
+    filename = filedialog.askopenfilename(initialdir="/", title="select file", filetypes=(("executables", "*.app"), ("all files", "*.*"))) # also gives the location of the picked file 
 
     apps.append(filename)
     print(filename)
     for app in apps:
-        label = tk.Label(frame, text=app, bg="#3A6351")
+        label = tk.Label(frame, text=app, bg="#DECDC3")
 
 # run the app 
 def runApps():
     for app in apps:
-        os.startfile(app)
-
+#        os.startfile(app)  ## for windows
+        opener = "open" if sys.platform == "darwin" else "xdg-open" # for macos/Linux
+        subprocess.call([opener, app])
 
 # create canvas
-canvas = tk.Canvas(root, height=700, width=700, bg="#393232")
+canvas = tk.Canvas(root, height=700, width=700, bg="#39A6A3")
 # attach the canvas to the root
 canvas.pack()
 
 # frame in the middle
-frame = tk.Frame(root, bg="#F2EDD7")
+frame = tk.Frame(root, bg="#0F3460")
 frame.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
 
 # buttons 
 # open files 
-openFile = tk.Button(root, text="open File", padx=10, pady=5, fg="white", bg="#F58634", command=addApp)
+openFile = tk.Button(root, text="open File", padx=10, pady=5, fg="red", bg="#BF1363", command=addApp)
 openFile.pack()
 
 # run apps 
-runApps = tk.Button(root, text="run Apps", padx=10, pady=5, fg="white", bg="#F58634", command=runApps)
+runApps = tk.Button(root, text="run Apps", padx=10, pady=5, fg="red", bg="#BF1363", command=runApps)
 runApps.pack()
 
 # populate the saved apps on the screen
@@ -77,3 +79,4 @@ with open("save.txt", "w") as f:
 # test it on windows vm 
 # find a better design of the app 
 
+        
